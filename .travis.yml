@@ -1,0 +1,60 @@
+language: java
+dist: trusty
+sudo: required
+
+jdk:
+  - oraclejdk8
+
+git:
+  quiet: true
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+jobs:
+  include:
+    - stage: install
+      script: ./gradlew build -S -i
+    - stage: deploy
+      script: ./gradlew bintrayUpload -S -i
+    - stage: javadocs
+      script: ./gradlew javadocs -S -i
+      deploy:
+        provider: pages
+        api_key: $GITHUB_OAUTH_TOKEN
+        files: build/docs/javadoc/*
+        keep_history: true
+        skip_cleanup: true
+        target_branch: gh_pages
+        on:
+          branch: master
+    - stage: release
+      script: ./gradlew build -S -i
+      deploy:
+        provider: releases
+        api_key: $GITHUB_OAUTH_TOKEN
+        files: build/libs/*
+        skip_cleanup: true
+        on:
+          tags: true
+
+stages:
+  - install
+  - name: deploy
+    if: repo = liachmodded/doublecart AND env(bintray_key)
+  - name: javadocs
+    if: repo = liachmodded/doublecart AND env(bintray_key)
+  - name: releases
+    if: repo = liachmodded/doublecart AND env(bintray_key)
+
+env:
+  global:
+    TERM=dumb
+
+notifications:
+  email: false

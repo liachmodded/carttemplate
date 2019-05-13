@@ -9,7 +9,12 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
-version = project.mod_version
+if (isNullOrEmpty(System.getenv("TRAVIS_TAG")) && !isNullOrEmpty(System.getenv('TRAVIS_COMMIT'))) {
+    version = project.mod_version + '.' + System.getenv('TRAVIS_COMMIT')
+} else {
+    version = project.mod_version
+}
+logger.lifecycle("doublecart version ${project.version}")
 group = project.maven_group
 
 minecraft {
@@ -27,6 +32,7 @@ dependencies {
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
 }
+
 license {
     header = file('HEADER.txt')
     include '**/*.java'
@@ -34,14 +40,12 @@ license {
     newLine = false
 }
 
-
 processResources {
-    inputs.property "version", project.version
+    inputs.properties "version": project.version, "description": project.description
 
     from(sourceSets.main.resources.srcDirs) {
         include "fabric.mod.json"
-//        expand "version": project.version
-//        expand "desc": project.description
+        expand "version": project.version, "description": project.description
     }
 
     from(sourceSets.main.resources.srcDirs) {
@@ -83,34 +87,32 @@ artifacts {
     archives javadocsJar
 }
 
-if (System.getenv('bintray_user') != null) {
-    //com.jfrog.bintray.gradle.tasks.BintrayPublishTask
-    bintray {
-        user = System.getenv 'bintray_user'
-        key = System.getenv 'bintray_key'
-        publish = true
-        override = true
-        publications += ['mavenJava']
-        pkg {
-            repo = 'doublecart'
-            name = 'doublecart'
-            userOrg = 'liachmodded'
-            licenses = ['MPL-2.0']
-            desc = project.description
-            websiteUrl = 'https://github.com/liachmodded/doublecart'
-            issueTrackerUrl = 'https://github.com/liachmodded/doublecart/issues'
-            vcsUrl = 'https://github.com/liachmodded/doublecart.git'
-            publicDownloadNumbers = true
-            attributes = [] //Optional package-level attributes
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.getProperty('bintrayUser') : System.getenv('bintray_user')
+    key = project.hasProperty('bintrayKey') ? project.getProperty('bintrayKey') : System.getenv('bintray_key')
+    publish = true
+    override = true
+    publications = ['mavenJava']
+    pkg {
+        repo = 'doublecart'
+        name = 'doublecart'
+        user = 'liach'
+        userOrg = 'liachmodded'
+        licenses = ['MPL-2.0']
+        desc = project.description
+        websiteUrl = 'https://github.com/liachmodded/doublecart'
+        issueTrackerUrl = 'https://github.com/liachmodded/doublecart/issues'
+        vcsUrl = 'https://github.com/liachmodded/doublecart.git'
+        publicDownloadNumbers = true
 
-            githubRepo = 'liachmodded/doublecart'
-            version {
-                name = project.mod_version
-                released = new Date()
-                if (System.getenv("TRAVIS_TAG") != null) {
-                    vcsTag = "${System.getenv("TRAVIS_TAG")}"
-                }
-                attributes = []
+        githubRepo = 'liachmodded/doublecart'
+        version {
+            name = project.version
+            released = new Date()
+            if (!isNullOrEmpty(System.getenv("TRAVIS_TAG"))) {
+                vcsTag = System.getenv("TRAVIS_TAG")
+            } else {
+                vcsTag = ''
             }
         }
     }
@@ -136,4 +138,8 @@ publishing {
         // uncomment to publish to the local maven
         // mavenLocal()
     }
+}
+
+static boolean isNullOrEmpty(String st) {
+    return st == null || st.isEmpty()
 }
