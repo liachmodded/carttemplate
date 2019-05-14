@@ -27,7 +27,7 @@ jobs:
       deploy:
         provider: pages
         api_key: $GITHUB_OAUTH_TOKEN
-        files: build/docs/javadoc/*
+        local_dir: build/docs/javadoc
         keep_history: true
         skip_cleanup: true
         target_branch: gh_pages
