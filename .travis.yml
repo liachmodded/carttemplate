@@ -26,7 +26,7 @@ jobs:
       script: ./gradlew javadocs -S -i
       deploy:
         provider: pages
-        api_key: $GITHUB_OAUTH_TOKEN
+        github_token: $GITHUB_OAUTH_TOKEN
         local_dir: build/docs/javadoc
         keep_history: true
         skip_cleanup: true
