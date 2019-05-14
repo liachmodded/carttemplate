@@ -30,7 +30,7 @@ jobs:
         local_dir: build/docs/javadoc
         keep_history: true
         skip_cleanup: true
-        target_branch: gh_pages
+        target_branch: gh-pages
         on:
           branch: master
     - stage: release
