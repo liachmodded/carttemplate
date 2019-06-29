@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.2.3-SNAPSHOT'
+    id 'fabric-loom' version '0.2.4-SNAPSHOT'
     id 'maven-publish'
     id 'com.jfrog.bintray' version '1.8.4'
     id 'net.minecrell.licenser' version '0.4.1'
@@ -40,19 +40,6 @@ license {
     newLine = false
 }
 
-processResources {
-    inputs.properties "version": project.version, "description": project.description
-
-    from(sourceSets.main.resources.srcDirs) {
-        include "fabric.mod.json"
-        expand "version": project.version, "description": project.description
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "fabric.mod.json"
-    }
-}
-
 // ensure that the encoding is set to UTF-8, no matter what the system default is
 // this fixes some edge cases with special characters not displaying correctly
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
@@ -73,6 +60,39 @@ tasks.withType(Javadoc) {
     options.addStringOption('Xdoclint:none', '-quiet')
 }
 
+def dataDir = project.file(".gradle/datadump")
+def dataCacheDir = project.file(".gradle/datadump/.cache")
+
+task generateData(type: JavaExec) {
+    doFirst {
+	    dataDir.delete()
+	}
+	
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'com.github.liachmodded.doublecart.data.DataDumper'
+
+  // arguments to pass to the application
+    args dataDir.getAbsolutePath()
+
+    doLast {
+        dataCacheDir.delete()
+    }
+}
+
+processResources {
+    inputs.properties "version": project.version, "description": project.description
+
+    from(sourceSets.main.resources.srcDirs) {
+        include "fabric.mod.json"
+        expand "version": project.version, "description": project.description
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "fabric.mod.json"
+    }
+}
+
 // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 // if it is present.
 // If you remove this task, sources will not be generated.
@@ -91,6 +111,10 @@ task javadocsJar(type: Jar, dependsOn: javadocs) {
 }
 
 jar {
+    dependsOn generateData
+    from(dataDir) {
+        exclude "/.cache"
+    }
     from "LICENSE"
 }
 

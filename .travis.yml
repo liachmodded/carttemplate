@@ -41,6 +41,7 @@ jobs:
         files: build/libs/*
         skip_cleanup: true
         on:
+          branch: master
           tags: true
 
 stages:

@@ -6,8 +6,15 @@
 package com.github.liachmodded.doublecart;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.util.Identifier;
 
 public class DoubleCartEntry implements ModInitializer {
+
+    public static final String ID = "doublecart";
+
+    public static Identifier name(String name) {
+        return new Identifier(ID, name);
+    }
 
     @Override
     public void onInitialize() {
