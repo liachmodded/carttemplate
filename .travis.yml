@@ -18,11 +18,14 @@ cache:
 
 jobs:
   include:
-    - stage: install
+    - stage: build
+      install: true
       script: ./gradlew build -S -i
     - stage: deploy
+      install: true
       script: ./gradlew bintrayUpload -S -i
     - stage: javadocs
+      install: true
       script: ./gradlew javadocs -S -i
       deploy:
         provider: pages
@@ -34,6 +37,7 @@ jobs:
         on:
           branch: master
     - stage: release
+      install: true
       script: ./gradlew build -S -i
       deploy:
         provider: releases
@@ -49,9 +53,9 @@ stages:
   - name: deploy
     if: repo = liachmodded/doublecart AND env(bintray_key)
   - name: javadocs
-    if: repo = liachmodded/doublecart AND env(bintray_key)
+    if: repo = liachmodded/doublecart AND env(GITHUB_OAUTH_TOKEN)
   - name: releases
-    if: repo = liachmodded/doublecart AND env(bintray_key)
+    if: repo = liachmodded/doublecart AND env(GITHUB_OAUTH_TOKEN)
 
 env:
   global:
