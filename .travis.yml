@@ -49,7 +49,7 @@ jobs:
           tags: true
 
 stages:
-  - install
+  - build
   - name: deploy
     if: repo = liachmodded/doublecart AND env(bintray_key)
   - name: javadocs
