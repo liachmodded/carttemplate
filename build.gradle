@@ -8,29 +8,43 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-archivesBaseName = project.archives_base_name
 if (isNullOrEmpty(System.getenv("TRAVIS_TAG")) && !isNullOrEmpty(System.getenv('TRAVIS_COMMIT'))) {
-    version = project.mod_version + '.' + System.getenv('TRAVIS_COMMIT')
+    version = project.modVersion + '-' + System.getenv('TRAVIS_COMMIT')
 } else {
-    version = project.mod_version
+    version = project.modVersion
 }
-logger.lifecycle("doublecart version ${project.version}")
-group = project.maven_group
+logger.lifecycle("${project.archivesBaseName} version ${project.version}")
+group = project.mavenGroup
 
 minecraft {
 }
 
 dependencies {
     //to change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}"
-    modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
+    minecraft "com.mojang:minecraft:${project.minecraftVersion}"
+    mappings "net.fabricmc:yarn:${project.yarnMappings}"
+    modCompile "net.fabricmc:fabric-loader:${project.loaderVersion}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    // modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    // modCompile "net.fabricmc.fabric-api:fabric-api:${project.apiVersion}"
 
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
+}
+
+sourceSets {
+    code {
+	    compileClasspath += sourceSets.main.compileClasspath
+		compileClasspath += configurations.minecraftNamed
+		runtimeClasspath += sourceSets.main.runtimeClasspath
+		compileClasspath += configurations.minecraftNamed
+	}
+	data {
+	    compileClasspath += sourceSets.code.compileClasspath
+	    compileClasspath += sourceSets.code.output
+        runtimeClasspath += sourceSets.code.compileClasspath
+        runtimeClasspath += sourceSets.code.output
+	}
 }
 
 license {
@@ -60,27 +74,38 @@ tasks.withType(Javadoc) {
     options.addStringOption('Xdoclint:none', '-quiet')
 }
 
-def dataDir = project.file(".gradle/datadump")
-def dataCacheDir = project.file(".gradle/datadump/.cache")
+def dataDir = project.file(".gradle/datadump/")
+def dataCacheDir = new File(dataDir, "/.cache/")
+
+task deleteOldData(type: Delete) {
+    delete dataDir
+}
 
 task generateData(type: JavaExec) {
+    dependsOn deleteOldData
+
     doFirst {
-	    dataDir.delete()
+        dataDir.mkdirs()
 	}
 	
-    classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.data.runtimeClasspath
 
-    main = 'com.github.liachmodded.doublecart.data.DataDumper'
+    main = project.dataEntry
 
-  // arguments to pass to the application
+    // arguments to pass to the application
+
+    workingDir dataDir
     args dataDir.getAbsolutePath()
-
-    doLast {
-        dataCacheDir.delete()
-    }
 }
 
 processResources {
+    dependsOn generateData
+
+    from(dataDir) {
+        include "/data/"
+    }
+    from sourceSets.code.resources.srcDirs
+
     inputs.properties "version": project.version, "description": project.description
 
     from(sourceSets.main.resources.srcDirs) {
@@ -98,11 +123,11 @@ processResources {
 // If you remove this task, sources will not be generated.
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = "sources"
-    from sourceSets.main.allSource
+    from sourceSets.code.allSource
 }
 
 task javadocs(type: Javadoc) {
-    source = sourceSets.main.allJava
+    source = sourceSets.code.allJava
 }
 
 task javadocsJar(type: Jar, dependsOn: javadocs) {
@@ -112,9 +137,7 @@ task javadocsJar(type: Jar, dependsOn: javadocs) {
 
 jar {
     dependsOn generateData
-    from(dataDir) {
-        exclude "/.cache"
-    }
+    from sourceSets.code.output
     from "LICENSE"
 }
 
@@ -131,18 +154,18 @@ bintray {
     override = true
     publications = ['mavenJava']
     pkg {
-        repo = 'doublecart'
-        name = 'doublecart'
+        repo = project.bintrayRepo
+        name = project.archivesBaseName
         user = 'liach'
         userOrg = 'liachmodded'
         licenses = ['MPL-2.0']
         desc = project.description
-        websiteUrl = 'https://github.com/liachmodded/doublecart'
-        issueTrackerUrl = 'https://github.com/liachmodded/doublecart/issues'
-        vcsUrl = 'https://github.com/liachmodded/doublecart.git'
+        websiteUrl = "https://github.com/liachmodded/${project.archivesBaseName}"
+        issueTrackerUrl = "https://github.com/liachmodded/${project.archivesBaseName}/issues"
+        vcsUrl = "https://github.com/liachmodded/${project.archivesBaseName}.git"
         publicDownloadNumbers = true
 
-        githubRepo = 'liachmodded/doublecart'
+        githubRepo = "liachmodded/${project.archivesBaseName}"
         version {
             name = project.version
             released = new Date()
