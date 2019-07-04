@@ -51,11 +51,11 @@ jobs:
 stages:
   - build
   - name: deploy
-    if: repo = liachmodded/doublecart AND env(bintray_key)
+    if: repo = liachmodded/carttemplate AND env(bintray_key)
   - name: javadocs
-    if: repo = liachmodded/doublecart AND env(GITHUB_OAUTH_TOKEN)
+    if: repo = liachmodded/carttemplate AND env(GITHUB_OAUTH_TOKEN)
   - name: releases
-    if: repo = liachmodded/doublecart AND env(GITHUB_OAUTH_TOKEN)
+    if: repo = liachmodded/carttemplate AND env(GITHUB_OAUTH_TOKEN)
 
 env:
   global:
