@@ -68,6 +68,7 @@ tasks.withType(Javadoc) {
             'https://google.github.io/guava/releases/21.0/api/docs/',
             'http://asm.ow2.org/asm50/javadoc/user/',
             'https://docs.oracle.com/javase/8/docs/api/'
+            // Need to add minecraft jd publication once there is one available
     )
 
     // Disable the crazy super-strict doclint tool in Java 8
@@ -157,15 +158,15 @@ bintray {
         repo = project.bintrayRepo
         name = project.archivesBaseName
         user = bintray.user
-        userOrg = 'liachmodded'
-        licenses = ['MPL-2.0']
+        userOrg = project.repoOwner
+        licenses = [project.codeLicense]
         desc = project.description
-        websiteUrl = "https://github.com/liachmodded/${project.archivesBaseName}"
-        issueTrackerUrl = "https://github.com/liachmodded/${project.archivesBaseName}/issues"
-        vcsUrl = "https://github.com/liachmodded/${project.archivesBaseName}.git"
+        websiteUrl = "https://github.com/${project.repoOwner}/${project.archivesBaseName}"
+        issueTrackerUrl = "https://github.com/${project.repoOwner}/${project.archivesBaseName}/issues"
+        vcsUrl = "https://github.com/${project.repoOwner}/${project.archivesBaseName}.git"
         publicDownloadNumbers = true
 
-        githubRepo = "liachmodded/${project.archivesBaseName}"
+        githubRepo = "${project.repoOwner}/${project.archivesBaseName}"
         version {
             name = project.version
             released = new Date()
