@@ -1,65 +1,60 @@
 language: java
 dist: trusty
 sudo: required
-
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 git:
   quiet: true
-
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
 jobs:
   include:
-    - stage: build
-      install: true
-      script: ./gradlew build -S -i
-    - stage: deploy
-      install: true
-      script: ./gradlew bintrayUpload -S -i
-    - stage: javadocs
-      install: true
-      script: ./gradlew javadocs -S -i
-      deploy:
-        provider: pages
-        github_token: $GITHUB_OAUTH_TOKEN
-        local_dir: build/docs/javadoc
-        keep_history: true
-        skip_cleanup: true
-        target_branch: gh-pages
-        on:
-          branch: master
-    - stage: release
-      install: true
-      script: ./gradlew build -S -i
-      deploy:
-        provider: releases
-        api_key: $GITHUB_OAUTH_TOKEN
-        files: build/libs/*
-        skip_cleanup: true
-        on:
-          branch: master
-          tags: true
-
+  - stage: build
+    install: true
+    script: "./gradlew build -S -i"
+  - stage: deploy
+    install: true
+    script: "./gradlew bintrayUpload -S -i"
+  - stage: javadocs
+    install: true
+    script: "./gradlew javadocs -S -i"
+    deploy:
+      provider: pages
+      github_token: "$GITHUB_OAUTH_TOKEN"
+      local_dir: build/docs/javadoc
+      keep_history: true
+      skip_cleanup: true
+      target_branch: gh-pages
+      on:
+        branch: master
+  - stage: release
+    install: true
+    script: "./gradlew build -S -i"
+    deploy:
+      provider: releases
+      api_key: "$GITHUB_OAUTH_TOKEN"
+      files: build/libs/*
+      skip_cleanup: true
+      on:
+        branch: master
+        tags: true
 stages:
-  - build
-  - name: deploy
-    if: repo = liachmodded/carttemplate AND env(bintray_key)
-  - name: javadocs
-    if: repo = liachmodded/carttemplate AND env(GITHUB_OAUTH_TOKEN)
-  - name: releases
-    if: repo = liachmodded/carttemplate AND env(GITHUB_OAUTH_TOKEN)
-
+- build
+- name: deploy
+  if: repo = liachmodded/carttemplate AND env(bintray_key)
+- name: javadocs
+  if: repo = liachmodded/carttemplate AND env(GITHUB_OAUTH_TOKEN)
+- name: releases
+  if: repo = liachmodded/carttemplate AND env(GITHUB_OAUTH_TOKEN)
 env:
   global:
-    TERM=dumb
-
+  - TERM=dumb
+  - secure: Jl55nMp4euvj31tq1GzRcz1XtLwEDMkzIX0r6ycy8zNfbBOpdIVL/E2AbH6mwEee3izXzw62dq8YCqJubsG+X2tl2ly3KtwENtBDas1Q8gg5zEvJHy56sO82m+SiVMoqTeeCL+cYWZyQdjH49tjCRSa/GCf1NY5cEA74Vimv4SXnwILhTj+Ui/F4jZjBONVMzOTdrNwWbwFIUUThmu+vV7dG/OYb+vi5VCb/YTa1/yXfdw+xYoyv94G/JHg6BvXDl1Fw45njlDUiCuRc8RTbTX6YasRkf6pdCCbb2+HywEU390kElPx5an+BFYiyi+fExpDxZ99/TzxKvo83hMxVCBKD6dkucQeEupQ48ffp0VWHAD4pGIqmxLHvcdpsdmzq8r0H45sVN6jrEK/ylb9wrOD03vEMrdOBsG9eteYZZ3zMEAo+2rUuNMdEIizqmQ91Cygu4gZFmXPXSr7+WVmc998aPXGxpkJ0+smQcmyMM08U3JNSfdJBynzSCbvIqtxv+gMPTa5pT/QFjEaTEIUHVHyIkuLMol3vHdkevCNXK9PL2QYdPPGxuPxoSzkxTukFgi2Zv+rpICvU4rMW3PBz5hXNubHz0jOfemeB2voUcsoUsXHAUds2zULy6o5xRlfkNYr8PrZFureqCYL5Bc4dxyHcCS5kYi0S72wspw+g730=
+  - secure: DR27KFMLDCo2LP+0OxbHpPqTthfonfn+VfepI42w2oFbPvPvTROrcTJAYKm8/r3bBHn6WgYCAgrjdtMrWcti2Pv9BmZI5T1C22mAaJxdPwfYru3OE/LDCvIGOekUlKZJquNWIOLfr65ENI67/CTgBEd9I3w0YWoZ9gycyPAxGzHi7SuaREoqeFyBOuGP6oHLpurhZhEmFqD0/ndYIdl3cpvZL4z0L8Cp8n/xozF1Q949j7Y34/zWHG0DDD/W1YkOaXsrNwsMye5rLo2wESknyzJPDqipmYjhdksPFNntpL0k/6fiqeNVRy0rsfM7X6eMdDc2d44aEt2dxmhgvjdSZ86C5DGVvigpedSyuuF1pxkw/AW6PTc9FlJLmQ3G3aZYOEEMDv4D9CLA8BniXdlZdHgOoatmERLXtZMvr0yuZisyTTudSLPnfM6ktXLhi29YVmI4OW79eYMMp/s0tlgMIYBJyIhFi1tFeMcKRZ6giDZPpnVDNUBuRpZ55lbFdhLowGfEiPMaoH/0yOZMN6MXvTASfJ6Ai3OPhgd0vLV1jLYCBJ5qrc4AQbBKepoiRBpCyOJpj02KBvSPjVFsKpUlKdTkWd52B6EcviR4RbueJO4xAIHozn6eQg82tgbeJgXS4Lk+wBBfrndgX9mIDvgfO4KgKNMeu36jKfic/o083j8=
 notifications:
   email: false

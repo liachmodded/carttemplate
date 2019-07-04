@@ -8,8 +8,8 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-if (isNullOrEmpty(System.getenv("TRAVIS_TAG")) && !isNullOrEmpty(System.getenv('TRAVIS_COMMIT'))) {
-    version = project.modVersion + '-' + System.getenv('TRAVIS_COMMIT')
+if (isNullOrEmpty(System.getenv("TRAVIS_TAG")) && !isNullOrEmpty(System.getenv('TRAVIS_BUILD_NUMBER'))) {
+    version = project.modVersion + '.' + System.getenv('TRAVIS_BUILD_NUMBER')
 } else {
     version = project.modVersion
 }
@@ -34,17 +34,17 @@ dependencies {
 
 sourceSets {
     code {
-	    compileClasspath += sourceSets.main.compileClasspath
-		compileClasspath += configurations.minecraftNamed
-		runtimeClasspath += sourceSets.main.runtimeClasspath
-		compileClasspath += configurations.minecraftNamed
-	}
-	data {
-	    compileClasspath += sourceSets.code.compileClasspath
-	    compileClasspath += sourceSets.code.output
+        compileClasspath += sourceSets.main.compileClasspath
+        compileClasspath += configurations.minecraftNamed
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+        compileClasspath += configurations.minecraftNamed
+    }
+    data {
+        compileClasspath += sourceSets.code.compileClasspath
+        compileClasspath += sourceSets.code.output
         runtimeClasspath += sourceSets.code.compileClasspath
         runtimeClasspath += sourceSets.code.output
-	}
+    }
 }
 
 license {
@@ -86,8 +86,8 @@ task generateData(type: JavaExec) {
 
     doFirst {
         dataDir.mkdirs()
-	}
-	
+    }
+
     classpath = sourceSets.data.runtimeClasspath
 
     main = project.dataEntry
