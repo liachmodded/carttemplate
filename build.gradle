@@ -156,7 +156,7 @@ bintray {
     pkg {
         repo = project.bintrayRepo
         name = project.archivesBaseName
-        user = 'liach'
+        user = bintray.user
         userOrg = 'liachmodded'
         licenses = ['MPL-2.0']
         desc = project.description
