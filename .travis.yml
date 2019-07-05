@@ -49,7 +49,7 @@ stages:
   if: repo = liachmodded/carttemplate AND env(bintray_key)
 - name: javadocs
   if: repo = liachmodded/carttemplate AND env(GITHUB_OAUTH_TOKEN)
-- name: releases
+- name: release
   if: repo = liachmodded/carttemplate AND env(GITHUB_OAUTH_TOKEN)
 env:
   global:
