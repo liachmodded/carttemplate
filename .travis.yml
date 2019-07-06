@@ -15,42 +15,32 @@ cache:
 jobs:
   include:
   - stage: build
-    install: true
+    install: chmod +x ./gradlew
     script: "./gradlew build -S -i"
   - stage: deploy
     install: true
-    script: "./gradlew bintrayUpload -S -i"
-  - stage: javadocs
-    install: true
-    script: "./gradlew javadocs -S -i"
+    script: "./gradlew javadocs build bintrayUpload -S -i"
     deploy:
-      provider: pages
-      github_token: "$GITHUB_OAUTH_TOKEN"
-      local_dir: build/docs/javadoc
-      keep_history: true
-      skip_cleanup: true
-      target_branch: gh-pages
-      on:
-        branch: master
-  - stage: release
-    install: true
-    script: "./gradlew build -S -i"
-    deploy:
-      provider: releases
-      api_key: "$GITHUB_OAUTH_TOKEN"
-      files: build/libs/*
-      skip_cleanup: true
-      on:
-        branch: master
-        tags: true
+      - provider: pages
+        github_token: "$GITHUB_OAUTH_TOKEN"
+        local_dir: build/docs/javadoc
+        keep_history: true
+        skip_cleanup: true
+        target_branch: gh-pages
+        on:
+          branch: master
+      - provider: releases
+        api_key: "$GITHUB_OAUTH_TOKEN"
+        files: build/libs/*
+        skip_cleanup: true
+        on:
+          branch: master
+          tags: true
+
 stages:
 - build
 - name: deploy
-  if: repo = liachmodded/carttemplate AND env(bintray_key)
-- name: javadocs
-  if: repo = liachmodded/carttemplate AND env(GITHUB_OAUTH_TOKEN)
-- name: release
-  if: repo = liachmodded/carttemplate AND env(GITHUB_OAUTH_TOKEN)
+  if: repo = liachmodded/carttemplate AND env(bintray_key) AND env(GITHUB_OAUTH_TOKEN)
 env:
   global:
   - TERM=dumb
