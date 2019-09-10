@@ -67,7 +67,9 @@ tasks.withType(Javadoc) {
     options.links(
             'https://google.github.io/guava/releases/21.0/api/docs/',
             'http://asm.ow2.org/asm50/javadoc/user/',
-            'https://docs.oracle.com/javase/8/docs/api/'
+            'https://docs.oracle.com/javase/8/docs/api/',
+            'http://jenkins.liteloader.com/job/Mixin/javadoc/',
+            'https://logging.apache.org/log4j/2.x/log4j-api/apidocs/'
             // Need to add minecraft jd publication once there is one available
     )
 
