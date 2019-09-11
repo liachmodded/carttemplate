@@ -200,7 +200,7 @@ publishing {
     repositories {
         if (!isNullOrEmpty(System.getenv('GITHUB_OAUTH_TOKEN'))) {
             maven {
-                name = "GitHub Package Registry"
+                name = "github-package"
                 url = "https://maven.pkg.github.com/${project.repoOwner}/${project.archivesBaseName}"
                 credentials {
                     username = "${project.githubPackagePublisher}"
