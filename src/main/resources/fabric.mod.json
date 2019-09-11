@@ -26,7 +26,7 @@
     "doublecart.mixins.json"
   ],
 
-  "requires": {
+  "depends": {
     "fabricloader": "${loaderVersionLimit}",
     "minecraft": "${minecraftVersionLimit}"
   }
