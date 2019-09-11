@@ -198,8 +198,15 @@ publishing {
 
     // select the repositories you want to publish to
     repositories {
-        // uncomment to publish to the local maven
-        // mavenLocal()
+        if (!isNullOrEmpty(System.getenv('GITHUB_OAUTH_TOKEN'))) {
+            maven {
+                url = "https://maven.pkg.github.com/${project.repoOwner}/${project.archivesBaseName}/"
+                credentials {
+                    username = "${project.githubPackagePublisher}"
+                    password = System.getenv('GITHUB_OAUTH_TOKEN')
+                }
+            }
+        }
     }
 }
 
