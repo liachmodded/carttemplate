@@ -1,6 +1,6 @@
 {
     "pack": {
-        "description": "Nah",
+        "description": "${id} resources",
         "pack_format": 4
     }
 }
