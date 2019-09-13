@@ -30,6 +30,8 @@ dependencies {
 
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
+
+    annotationProcessor 'net.fabricmc:fabric-mixin-compile-extensions:0.1.0.+'
 }
 
 sourceSets {
@@ -59,6 +61,17 @@ license {
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+    // Loom is just so cursed that it does not handle extra source sets nicely
+    options.annotationProcessorPath += configurations.annotationProcessor
+    doFirst {
+        def args = options.compilerArgs
+        project.minecraft {
+            args.add "-AinMapFileNamedIntermediary=" + mappingsProvider.MAPPINGS_TINY.canonicalPath
+            args.add "-AoutMapFileNamedIntermediary=" + mappingsProvider.MAPPINGS_MIXIN_EXPORT.canonicalPath
+            args.add "-AoutRefMapFile=" + new File(destinationDir, refmapName).canonicalPath
+            args.add "-AdefaultObfuscationEnv=named:intermediary"
+        }
+    }
 }
 
 tasks.withType(Javadoc) {
