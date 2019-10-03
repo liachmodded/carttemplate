@@ -242,13 +242,35 @@ publishing {
             }
             artifact javadocsJar
         }
+
+        mavenGitHub(MavenPublication) {
+            pom {
+                name = project.name
+                description = project.description
+                url = "https://github.com/${project.repoOwner}/${project.repoName}"
+                licenses {
+                    license {
+                        name = project.codeLicense
+                    }
+                }
+
+                scm {
+                    url = "https://github.com/${project.repoOwner}/${project.repoName}"
+                }
+            }
+
+            // add all the jars that should be included when publishing to maven
+            artifact(jar) {
+                builtBy remapJar
+            }
+        }
     }
 
     // select the repositories you want to publish to
     repositories {
         if (!isNullOrEmpty(System.getenv('GITHUB_OAUTH_TOKEN'))) {
             maven {
-                name = "github-package"
+                name = "GitHub"
                 url = "https://maven.pkg.github.com/${project.repoOwner}/${project.repoName}"
                 credentials {
                     username = "${project.githubPackagePublisher}"
