@@ -90,8 +90,8 @@ tasks.withType(Javadoc) {
     options.addStringOption('Xdoclint:none', '-quiet')
 }
 
-def dataDir = project.file("$buildDir/datadump/")
-def dataCacheDir = new File(dataDir, "/.cache/")
+def dataDir = file("$buildDir/datadump/")
+def dataCacheDir = file("$dataDir/.cache/")
 def outputDirectory = file("$buildDir/pom-properties")
 def pomProperties = file("$outputDirectory/pom.properties")
 
@@ -242,36 +242,35 @@ publishing {
             }
             artifact javadocsJar
         }
+    }
 
-        mavenGitHub(MavenPublication) {
-            pom {
-                name = project.name
-                description = project.description
-                url = "https://github.com/${project.repoOwner}/${project.repoName}"
-                licenses {
-                    license {
-                        name = project.codeLicense
+    if (!isNullOrEmpty(System.getenv('GITHUB_OAUTH_TOKEN'))) {
+        publications {
+            mavenGitHub(MavenPublication) {
+                pom {
+                    name = project.name
+                    description = project.description
+                    url = "https://github.com/${project.repoOwner}/${project.repoName}"
+                    licenses {
+                        license {
+                            name = project.codeLicense
+                        }
+                    }
+
+                    scm {
+                        url = "https://github.com/${project.repoOwner}/${project.repoName}"
                     }
                 }
 
-                scm {
-                    url = "https://github.com/${project.repoOwner}/${project.repoName}"
-                }
-            }
-
-            // add all the jars that should be included when publishing to maven
-            artifact(jar) {
-                builtBy remapJar
+                // add all the jars that should be included when publishing to maven
+                from(components.java)
             }
         }
-    }
-
-    // select the repositories you want to publish to
-    repositories {
-        if (!isNullOrEmpty(System.getenv('GITHUB_OAUTH_TOKEN'))) {
+        // select the repositories you want to publish to
+        repositories {
             maven {
                 name = "GitHub"
-                url = "https://maven.pkg.github.com/${project.repoOwner}/${project.repoName}"
+                url = uri("https://maven.pkg.github.com/${project.repoOwner}/${project.repoName}")
                 credentials {
                     username = "${project.githubPackagePublisher}"
                     password = System.getenv('GITHUB_OAUTH_TOKEN')

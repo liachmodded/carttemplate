@@ -45,24 +45,18 @@ public class CartAdvancementProvider implements DataProvider {
         Consumer<Advancement> consumer_1 = (advancement_1) -> {
             if (!set_1.add(advancement_1.getId())) {
                 throw new IllegalStateException("Duplicate advancement " + advancement_1.getId());
-            } else {
-                Path path_2 = getOutput(path_1, advancement_1);
+            }
+            Path path_2 = getOutput(path_1, advancement_1);
 
-                try {
-                    DataProvider.writeToPath(GSON, dataCache_1, advancement_1.createTask().toJson(), path_2);
-                } catch (IOException var6) {
-                    LOGGER.error("Couldn't save advancement {}", path_2, var6);
-                }
-
+            try {
+                DataProvider.writeToPath(GSON, dataCache_1, advancement_1.createTask().toJson(), path_2);
+            } catch (IOException var6) {
+                LOGGER.error("Couldn't save advancement {}", path_2, var6);
             }
         };
-        Iterator var5 = this.tabGenerators.iterator();
-
-        while(var5.hasNext()) {
-            Consumer<Consumer<Advancement>> consumer_2 = (Consumer)var5.next();
+        for (Consumer<Consumer<Advancement>> consumer_2 : this.tabGenerators) {
             consumer_2.accept(consumer_1);
         }
-
     }
 
     private static Path getOutput(Path path_1, Advancement advancement_1) {
