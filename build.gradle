@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.2.5-SNAPSHOT'
+    id 'fabric-loom' version '0.2.6-SNAPSHOT'
     id 'maven-publish'
     id 'com.jfrog.bintray' version '1.8.4'
     id 'net.minecrell.licenser' version '0.4.1'
@@ -22,7 +22,7 @@ minecraft {
 dependencies {
     //to change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraftVersion}"
-    mappings "net.fabricmc:yarn:${project.yarnMappings}"
+    mappings "net.fabricmc:yarn:${project.yarnMappings}:v2"
     modCompile "net.fabricmc:fabric-loader:${project.loaderVersion}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
