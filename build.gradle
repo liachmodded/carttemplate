@@ -66,8 +66,8 @@ tasks.withType(JavaCompile) {
     doFirst {
         def args = options.compilerArgs
         project.minecraft {
-            args.add "-AinMapFileNamedIntermediary=" + mappingsProvider.MAPPINGS_TINY.canonicalPath
-            args.add "-AoutMapFileNamedIntermediary=" + mappingsProvider.MAPPINGS_MIXIN_EXPORT.canonicalPath
+            args.add "-AinMapFileNamedIntermediary=" + mappingsProvider.tinyMappings.canonicalPath
+            args.add "-AoutMapFileNamedIntermediary=" + mappingsProvider.mappingsMixinExport.canonicalPath
             args.add "-AoutRefMapFile=" + new File(destinationDir, refmapName).canonicalPath
             args.add "-AdefaultObfuscationEnv=named:intermediary"
         }
