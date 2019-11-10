@@ -31,7 +31,7 @@ dependencies {
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
 
-    annotationProcessor 'net.fabricmc:fabric-mixin-compile-extensions:0.1.0.+'
+    annotationProcessor 'net.fabricmc:fabric-mixin-compile-extensions:0.2.0.+'
 }
 
 sourceSets {
