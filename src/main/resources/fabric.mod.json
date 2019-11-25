@@ -8,7 +8,7 @@
     "liach"
   ],
   "contact": {
-    "homepage": "https://${repoOwner}.github.io/${repoName}",
+    "homepage": "https://${repoOwner}.github.io/${repoName}/overview-summary.html",
     "sources": "https://github.com/${repoOwner}/${repoName}",
     "issues": "https://github.com/${repoOwner}/${repoName}/issues"
   },

@@ -6,7 +6,7 @@ A *Minecraft* [Fabric](https://github.com/FabricMC) mod template by [@liachmodde
 
 Replace the readme with whatever you want!
 
-This page should be included in the overview page of [the generated javadoc](https://liachmodded.github.io/carttemplate).
+This page should be included in the overview page of [the generated javadoc](https://liachmodded.github.io/carttemplate/overview-summary.html).
 
 ## Usage
 - Change:
