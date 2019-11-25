@@ -1,8 +1,8 @@
 language: java
-dist: bionic
+dist: trusty
 sudo: required
 jdk:
-- openjdk11
+- oraclejdk8
 git:
   quiet: true
 before_cache:
