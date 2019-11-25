@@ -11,7 +11,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
-public class DataDumper {
+public final class DataDumper {
+
+    private DataDumper() {
+    }
 
     public static void main(String... args) throws IOException {
         DataGenerator dataGenerator = new DataGenerator(new File(args[0]).toPath(), Collections.emptyList());
@@ -20,5 +23,4 @@ public class DataDumper {
 
         dataGenerator.run();
     }
-
 }

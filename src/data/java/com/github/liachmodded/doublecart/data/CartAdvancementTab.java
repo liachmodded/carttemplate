@@ -16,17 +16,21 @@ import net.minecraft.text.TranslatableText;
 
 import java.util.function.Consumer;
 
-public class CartAdvancementTab implements Consumer<Consumer<Advancement>> {
+final class CartAdvancementTab implements Consumer<Consumer<Advancement>> {
 
-    @Override
-    public void accept(Consumer<Advancement> consumer) {
-        Advancement advancement = Advancement.Task.create()
-                .display(makeDisplay(Items.MUSIC_DISC_STRAD , "dc.title", "dc.desc"))
-                .build(DoubleCartEntry.name("my_advancement"));
-        consumer.accept(advancement);
+    CartAdvancementTab() {
     }
 
-    public static AdvancementDisplay makeDisplay(ItemConvertible item, String titleKey, String descKey) {
-        return new AdvancementDisplay(new ItemStack(item.asItem()), new TranslatableText(titleKey), new TranslatableText(descKey), null, AdvancementFrame.TASK, true, true, false);
+    static AdvancementDisplay makeDisplay(ItemConvertible item, String titleKey, String descKey) {
+        return new AdvancementDisplay(new ItemStack(item.asItem()), new TranslatableText(titleKey), new TranslatableText(descKey), null,
+                AdvancementFrame.TASK, true, true, false);
+    }
+
+    @Override
+    public void accept(Consumer<Advancement> writer) {
+        Advancement advancement = Advancement.Task.create()
+                .display(makeDisplay(Items.MUSIC_DISC_STRAD, "dc.title", "dc.desc"))
+                .build(DoubleCartEntry.name("my_advancement"));
+        writer.accept(advancement);
     }
 }

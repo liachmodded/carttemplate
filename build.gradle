@@ -24,12 +24,8 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraftVersion}"
     mappings "net.fabricmc:yarn:${project.yarnMappings}:v2"
     modCompile "net.fabricmc:fabric-loader:${project.loaderVersion}"
-
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    // modCompile "net.fabricmc.fabric-api:fabric-api:${project.apiVersion}"
-
-    // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
-    // You may need to force-disable transitiveness on them.
+    
+    modCompile "net.fabricmc.fabric-api:fabric-api:${project.apiVersion}"
 
     annotationProcessor 'net.fabricmc:fabric-mixin-compile-extensions:0.2.0.+'
 }
@@ -160,14 +156,19 @@ task javadocs(type: Javadoc) {
     source = sourceSets.code.allJava
     classpath = sourceSets.code.compileClasspath
 
-    options.links(
-            'https://google.github.io/guava/releases/21.0/api/docs/',
-            'http://asm.ow2.org/asm50/javadoc/user/',
-            'https://docs.oracle.com/javase/8/docs/api/',
-            'http://jenkins.liteloader.com/job/Mixin/javadoc/',
-            'https://logging.apache.org/log4j/2.x/log4j-api/apidocs/'
-            // Need to add minecraft jd publication once there is one available
-    )
+    options {
+        if (file("build/docs/readme.html").exists()) {
+            overview = "build/docs/readme.html"
+        }
+        links(
+                'https://google.github.io/guava/releases/21.0/api/docs/',
+                'http://asm.ow2.org/asm50/javadoc/user/',
+                'https://docs.oracle.com/javase/8/docs/api/',
+                'http://jenkins.liteloader.com/job/Mixin/javadoc/',
+                'https://logging.apache.org/log4j/2.x/log4j-api/apidocs/'
+                // Need to add minecraft jd publication once there is one available
+        )
+    }
 }
 
 task javadocsJar(type: Jar, dependsOn: javadocs) {

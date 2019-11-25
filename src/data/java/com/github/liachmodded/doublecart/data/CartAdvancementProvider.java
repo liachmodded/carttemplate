@@ -11,59 +11,61 @@
 package com.github.liachmodded.doublecart.data;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.data.DataCache;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.server.EndTabAdvancementGenerator;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CartAdvancementProvider implements DataProvider {
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+
+final class CartAdvancementProvider implements DataProvider {
+
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
     private final DataGenerator root;
     private final List<Consumer<Consumer<Advancement>>> tabGenerators = ImmutableList.of(new CartAdvancementTab());
 
-    public CartAdvancementProvider(DataGenerator dataGenerator_1) {
-        this.root = dataGenerator_1;
+    CartAdvancementProvider(DataGenerator dataGenerator) {
+        this.root = dataGenerator;
     }
 
-    public void run(DataCache dataCache_1) throws IOException {
-        Path path_1 = this.root.getOutput();
-        Set<Identifier> set_1 = Sets.newHashSet();
-        Consumer<Advancement> consumer_1 = (advancement_1) -> {
-            if (!set_1.add(advancement_1.getId())) {
-                throw new IllegalStateException("Duplicate advancement " + advancement_1.getId());
+    private static Path getOutput(Path root, Advancement advancement) {
+        return root.resolve("data/" + advancement.getId().getNamespace() + "/advancements/" + advancement.getId().getPath() + ".json");
+    }
+
+    @Override
+    public void run(DataCache dataCache) {
+        Path outputRoot = this.root.getOutput();
+        Set<Identifier> ids = new HashSet<>();
+        Consumer<Advancement> writer = advancement -> {
+            if (!ids.add(advancement.getId())) {
+                throw new IllegalStateException("Duplicate advancement " + advancement.getId());
             }
-            Path path_2 = getOutput(path_1, advancement_1);
+            Path output = getOutput(outputRoot, advancement);
 
             try {
-                DataProvider.writeToPath(GSON, dataCache_1, advancement_1.createTask().toJson(), path_2);
-            } catch (IOException var6) {
-                LOGGER.error("Couldn't save advancement {}", path_2, var6);
+                DataProvider.writeToPath(GSON, dataCache, advancement.createTask().toJson(), output);
+            } catch (IOException ex) {
+                LOGGER.error("Couldn't save advancement {}", output, ex);
             }
         };
-        for (Consumer<Consumer<Advancement>> consumer_2 : this.tabGenerators) {
-            consumer_2.accept(consumer_1);
+        for (Consumer<Consumer<Advancement>> generator : this.tabGenerators) {
+            generator.accept(writer);
         }
     }
 
-    private static Path getOutput(Path path_1, Advancement advancement_1) {
-        return path_1.resolve("data/" + advancement_1.getId().getNamespace() + "/advancements/" + advancement_1.getId().getPath() + ".json");
-    }
-
+    @Override
     public String getName() {
-        return "Advancements";
+        return "Mod Advancements";
     }
 }
