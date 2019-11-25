@@ -18,7 +18,7 @@ jobs:
     script: "./gradlew build -S -i"
   - stage: deploy
     before_install: sudo apt-get install pandoc
-    install: pandoc README.md -f markdown -t html4 -s -o build/docs/readme.html
+    install: pandoc --from markdown --to html4 --standalone -o readme.html README.md
     script: "./gradlew javadocs build bintrayUpload publishMavenGitHubPublicationToGitHubRepository -S -i"
     deploy:
       - provider: pages

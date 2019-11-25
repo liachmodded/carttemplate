@@ -157,8 +157,8 @@ task javadocs(type: Javadoc) {
     classpath = sourceSets.code.compileClasspath
 
     options {
-        if (file("build/docs/readme.html").exists()) {
-            overview = "build/docs/readme.html"
+        if (file("readme.html").exists()) {
+            overview = "readme.html"
         }
         links(
                 'https://google.github.io/guava/releases/21.0/api/docs/',
