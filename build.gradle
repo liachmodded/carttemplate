@@ -155,7 +155,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 afterEvaluate {
     sourcesJar.archiveClassifier.set "dev-sources"
     jar.archiveClassifier.set "dev"
-    remapSourcesJar.archiveClassifier.set "sources"
+    //File file = remapSourcesJar.output no u
     remapJar.archiveClassifier.set ""
 }
 
@@ -250,7 +250,7 @@ publishing {
                 artifact jar
                 artifact sourcesJar
                 artifact remapJar
-                artifact remapSourcesJar.output
+                //artifact remapSourcesJar.output
                 artifact javadocsJar
             }
         }
