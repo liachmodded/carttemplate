@@ -148,8 +148,15 @@ processResources {
 // if it is present.
 // If you remove this task, sources will not be generated.
 task sourcesJar(type: Jar, dependsOn: classes) {
-    archiveClassifier.set "sources"
+    archiveClassifier.set "dev-sources"
     from sourceSets.code.allSource
+}
+
+afterEvaluate {
+    sourcesJar.archiveClassifier.set "dev-sources"
+    jar.archiveClassifier.set "dev"
+    remapSourcesJar.archiveClassifier.set "sources"
+    remapJar.archiveClassifier.set ""
 }
 
 task javadocs(type: Javadoc) {
