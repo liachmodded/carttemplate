@@ -239,11 +239,13 @@ publishing {
             }
 
             // add all the jars that should be included when publishing to maven
-            artifact jar
-            artifact sourcesJar
-            artifact remapJar
-            artifact remapSourcesJar
-            artifact javadocsJar
+            afterEvaluate {
+                artifact jar
+                artifact sourcesJar
+                artifact remapJar
+                artifact remapSourcesJar.output
+                artifact javadocsJar
+            }
         }
     }
 
