@@ -148,15 +148,9 @@ processResources {
 // if it is present.
 // If you remove this task, sources will not be generated.
 task sourcesJar(type: Jar, dependsOn: classes) {
-    archiveClassifier.set "dev-sources"
+    archiveClassifier.set "sources"
     from sourceSets.code.allSource
-}
-
-afterEvaluate {
-    sourcesJar.archiveClassifier.set "dev-sources"
-    jar.archiveClassifier.set "dev"
-    //File file = remapSourcesJar.output no u
-    remapJar.archiveClassifier.set ""
+    from "LICENSE"
 }
 
 task javadocs(type: Javadoc) {
@@ -189,10 +183,12 @@ jar {
     from "LICENSE"
 }
 
-artifacts {
-    archives jar
-    archives sourcesJar
-    archives javadocsJar
+afterEvaluate {
+    artifacts {
+        archives remapJar
+        // archives remapSourcesJar wait for loom pr
+        archives javadocsJar
+    }
 }
 
 bintray {
@@ -247,10 +243,8 @@ publishing {
 
             // add all the jars that should be included when publishing to maven
             afterEvaluate {
-                artifact jar
-                artifact sourcesJar
                 artifact remapJar
-                //artifact remapSourcesJar.output
+                // artifact remapSourcesJar wait for loom pr
                 artifact javadocsJar
             }
         }
