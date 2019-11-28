@@ -31,6 +31,7 @@ jobs:
           branch: master
       - provider: releases
         api_key: "$GITHUB_OAUTH_TOKEN"
+        file_glob: true
         file: build/libs/*
         skip_cleanup: true
         on:
