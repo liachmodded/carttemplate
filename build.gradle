@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.2.6-SNAPSHOT'
+    id 'fabric-loom' version '0.2.7-SNAPSHOT'
     id 'maven-publish'
     id 'com.jfrog.bintray' version '1.8.4'
     id 'net.minecrell.licenser' version '0.4.1'
@@ -187,7 +187,10 @@ jar {
 afterEvaluate {
     artifacts {
         archives remapJar
-        // archives remapSourcesJar wait for loom pr
+        archives(sourcesJar) {
+            classifier = "sources"
+            builtBy remapSourcesJar
+        }
         archives javadocsJar
     }
 }
@@ -245,7 +248,10 @@ publishing {
             // add all the jars that should be included when publishing to maven
             afterEvaluate {
                 artifact remapJar
-                // artifact remapSourcesJar wait for loom pr
+                artifact(sourcesJar) {
+                    classifier = "sources"
+                    builtBy remapSourcesJar
+                }
                 artifact javadocsJar
             }
         }
