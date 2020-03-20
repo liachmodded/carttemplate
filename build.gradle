@@ -277,6 +277,11 @@ publishing {
 
                 // add all the jars that should be included when publishing to maven
                 artifact remapJar
+                artifact(sourcesJar) {
+                    classifier = "sources"
+                    builtBy remapSourcesJar
+                }
+                artifact javadocsJar
             }
         }
         // select the repositories you want to publish to
