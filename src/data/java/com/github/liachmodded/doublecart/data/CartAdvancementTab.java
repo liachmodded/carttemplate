@@ -30,7 +30,7 @@ final class CartAdvancementTab implements Consumer<Consumer<Advancement>> {
     public void accept(Consumer<Advancement> writer) {
         Advancement advancement = Advancement.Task.create()
                 .display(makeDisplay(Items.MUSIC_DISC_STRAD, "dc.title", "dc.desc"))
-                .build(DoubleCartEntry.name("my_advancement"));
+                .build(DoubleCartEntry.id("my_advancement"));
         writer.accept(advancement);
     }
 }

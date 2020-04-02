@@ -12,6 +12,10 @@ import net.minecraft.util.Identifier;
  * The main entrypoint for the mod.
  */
 public final class DoubleCartEntry implements ModInitializer {
+    /**
+     * The mod's instance.
+     */
+    public static final DoubleCartEntry INSTANCE = new DoubleCartEntry();
 
     /**
      * The mod's namespace or id.
@@ -25,8 +29,11 @@ public final class DoubleCartEntry implements ModInitializer {
      * @param name the name for the identifier
      * @return the created identifier
      */
-    public static Identifier name(String name) {
+    public static Identifier id(String name) {
         return new Identifier(ID, name);
+    }
+
+    private DoubleCartEntry() {
     }
 
     /**
