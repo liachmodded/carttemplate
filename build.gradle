@@ -154,7 +154,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from "LICENSE"
 }
 
-task javadocs(type: Javadoc) {
+javadoc {
     source = sourceSets.code.allJava
     classpath = sourceSets.code.compileClasspath
 
@@ -163,19 +163,20 @@ task javadocs(type: Javadoc) {
             overview = "readme.html"
         }
         links(
-                'https://google.github.io/guava/releases/21.0/api/docs/',
-                'http://asm.ow2.org/asm50/javadoc/user/',
-                'https://docs.oracle.com/javase/8/docs/api/',
-                'http://jenkins.liteloader.com/job/Mixin/javadoc/',
-                'https://logging.apache.org/log4j/2.x/log4j-api/apidocs/'
+                "https://maven.fabricmc.net/docs/fabric-api-${project.apiVersion}/",
+                "https://maven.fabricmc.net/docs/yarn-${project.yarnMappings}/",
+                'https://guava.dev/releases/21.0/api/docs/',
+                'https://asm.ow2.io/javadoc/',
+                'https://logging.apache.org/log4j/2.x/log4j-api/apidocs/',
+                'https://docs.oracle.com/javase/8/docs/api/'
                 // Need to add minecraft jd publication once there is one available
         )
     }
 }
 
-task javadocsJar(type: Jar, dependsOn: javadocs) {
-    archiveClassifier.set "javadocs"
-    from javadocs.destinationDir
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveClassifier.set "javadoc"
+    from javadoc.destinationDir
 }
 
 jar {
@@ -191,7 +192,7 @@ afterEvaluate {
             classifier = "sources"
             builtBy remapSourcesJar
         }
-        archives javadocsJar
+        archives javadocJar
     }
 }
 
@@ -252,7 +253,7 @@ publishing {
                     classifier = "sources"
                     builtBy remapSourcesJar
                 }
-                artifact javadocsJar
+                artifact javadocJar
             }
         }
     }
@@ -281,7 +282,7 @@ publishing {
                     classifier = "sources"
                     builtBy remapSourcesJar
                 }
-                artifact javadocsJar
+                artifact javadocJar
             }
         }
         // select the repositories you want to publish to
