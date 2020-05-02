@@ -1,8 +1,9 @@
 plugins {
-    id 'fabric-loom' version '0.2.7-SNAPSHOT'
+    id 'fabric-loom' version '0.4.2'
     id 'maven-publish'
     id 'com.jfrog.bintray' version '1.8.4'
     id 'net.minecrell.licenser' version '0.4.1'
+    //id "checkstyle"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -44,6 +45,11 @@ sourceSets {
         runtimeClasspath += sourceSets.code.output
     }
 }
+
+//checkstyle {
+//    configFile = rootProject.file("checkstyle.xml")
+//    toolVersion = '8.31'
+//}
 
 license {
     header = file('HEADER.txt')
@@ -300,6 +306,7 @@ publishing {
 }
 
 tasks.withType(Jar) {
+    from "LICENSE"
     dependsOn("generatePomFileForMavenJavaPublication", "generatePomPropertiesForJar")
     into("META-INF/maven/${project.group}/${project.name}") {
         from(generatePomFileForMavenJavaPublication) {
