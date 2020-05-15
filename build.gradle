@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.4.2'
+    id 'fabric-loom' version '0.4-SNAPSHOT'
     id 'maven-publish'
     id 'com.jfrog.bintray' version '1.8.4'
     id 'net.minecrell.licenser' version '0.4.1'
@@ -16,9 +16,6 @@ if (isNullOrEmpty(System.getenv("TRAVIS_TAG")) && !isNullOrEmpty(System.getenv('
 }
 logger.lifecycle("${project.repoName} version ${project.version}")
 group = project.mavenGroup
-
-minecraft {
-}
 
 dependencies {
     //to change the versions see the gradle.properties file

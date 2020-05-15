@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "",
+  "package": "com.github.liachmodded.doublecart.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
   ],
